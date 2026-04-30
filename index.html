@@ -1,49 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OSINT Market Intelligence Dashboard</title>
-  <style>
-    :root { --bg:#080d14; --panel:#101827; --panel2:#162235; --text:#e8f1ff; --muted:#91a4bd; --accent:#a6ff4d; --danger:#ff4d6d; --warn:#ffbf47; --blue:#4da3ff; --border:rgba(166,255,77,.2); }
-    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,rgba(77,163,255,.16),transparent 28%),var(--bg);color:var(--text)}
-    header{padding:24px 18px;border-bottom:1px solid var(--border);background:rgba(5,10,18,.9)} main{max-width:1150px;margin:0 auto;padding:20px 16px 60px}
-    h1{margin:0;font-size:clamp(1.5rem,4vw,2.4rem)} h2{margin-top:0;font-size:1.15rem} p{line-height:1.5}.tagline{margin-top:8px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:800px){.grid{grid-template-columns:1fr}} .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 16px 35px rgba(0,0,0,.28)}
-    .controls{display:grid;grid-template-columns:1fr 160px;gap:10px;margin-bottom:14px}@media(max-width:600px){.controls{grid-template-columns:1fr}} input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--text)} select option{background:#111827;color:white}
-    .hotspot{background:var(--panel2);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer}.hotspot:hover,.hotspot.active{border-color:var(--accent)}
-    .row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.name{font-weight:bold}.meta{color:var(--muted);font-size:.86rem;margin-top:5px}.score{min-width:54px;text-align:center;border-radius:10px;padding:8px;font-weight:bold;background:rgba(255,255,255,.06)}
-    .high{color:var(--danger)}.medium{color:var(--warn)}.low{color:var(--blue)}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.tag{font-size:.76rem;color:#cfe6ff;background:rgba(77,163,255,.12);padding:5px 8px;border-radius:999px}
-    .stage-pill{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:999px;background:rgba(166,255,77,.08);border:1px solid var(--border);font-size:.78rem;color:var(--accent)}
-    .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin:8px 0}.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--warn),var(--danger));border-radius:999px}
-    .section{border-top:1px solid rgba(255,255,255,.1);margin-top:16px;padding-top:14px}.section h3{color:var(--accent);text-transform:uppercase;font-size:.82rem;letter-spacing:.1em}.asset-grid,.report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px}.bullish{color:var(--accent)}.bearish{color:var(--danger)}.neutral{color:var(--muted)}footer{color:var(--muted);font-size:.83rem;margin-top:20px}
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSINT Intelligence System</title>
+<style>
+body{margin:0;font-family:Arial;background:#0b1220;color:#e6eefc}
+header{padding:20px;background:#111a2e}
+.container{padding:15px}
+.card{background:#141f36;padding:15px;border-radius:10px;margin-bottom:10px}
+.hotspot{cursor:pointer;padding:10px;border-bottom:1px solid #2a3b5c}
+.hotspot:hover{background:#1c2a48}
+</style>
 </head>
 <body>
-  <header><h1>OSINT Market Intelligence Dashboard</h1><div class="tagline">Event → Trend → Asset → Information Stage → Decision</div></header>
-  <main>
-    <div class="grid">
-      <section class="panel"><h2>Hotspot Intelligence Nodes</h2><div class="controls"><input id="search" placeholder="Search hotspots, assets, regions..."/><select id="category"><option value="all">All Categories</option><option value="geopolitical">Geopolitical</option><option value="energy">Energy</option><option value="shipping">Shipping</option><option value="technology">Technology</option><option value="currency">Currency</option></select></div><div id="hotspots"></div></section>
-      <section class="panel" id="details"><h2>Select a hotspot</h2><p>Click a node to view event sequence, source stage, narrative saturation, and action bias.</p></section>
-    </div>
-    <section class="panel" style="margin-top:16px;"><h2>Asset Impact Dashboard</h2><div class="asset-grid" id="assets"></div></section>
-    <section class="panel" style="margin-top:16px;"><h2>Reports</h2><div class="report-grid" id="reports"></div></section>
-    <footer>Educational intelligence only. Not financial advice or a recommendation to buy or sell any asset.</footer>
-  </main>
+<header><h2>OSINT Intelligence System</h2></header>
+<div class="container">
+<div class="card"><h3>Hotspots</h3><div id="hotspots"></div></div>
+<div class="card"><h3>Details</h3><div id="details"></div></div>
+<div class="card"><h3>Assets</h3><div id="assets"></div></div>
+</div>
 <script>
-const data={hotspots:[
-{id:'red_sea',name:'Red Sea Shipping Disruption',region:'Red Sea / Bab el-Mandeb',category:['geopolitical','shipping','energy'],stage:'confirmed',information_stage:'mainstream',action_bias:'Scale out / avoid chasing',narrative_saturation:.82,score:86,summary:'Commercial shipping risk remains elevated around a strategic chokepoint, creating pressure on freight costs, insurance rates, and energy-risk premiums.',events:['Vessel threat reports increase rerouting risk.','Shipping insurers reassess premiums.','Energy traders price supply-route disruption.'],causes:['Regional conflict spillover','Proxy warfare','Strategic chokepoint leverage'],effects:['Higher freight costs','Oil risk premium','Defense and maritime security demand'],bullish:['CL','GC','XLE','ITA'],bearish:['Global equities','Consumer goods'],neutral:['USD']},
-{id:'hormuz',name:'Strait of Hormuz Escalation Risk',region:'Persian Gulf',category:['geopolitical','energy'],stage:'developing',information_stage:'developing_rumor',action_bias:'Watch / build only on confirmation',narrative_saturation:.46,score:78,summary:'Escalation near Hormuz carries outsized oil-market relevance because of the volume of seaborne energy flows through the region.',events:['Regional rhetoric increases.','Naval posturing rises.','Oil volatility expands during escalation windows.'],causes:['Iran-West tension','Israel-Iran tension','Energy security vulnerability'],effects:['Oil volatility','Gold safe-haven bid','Risk-off pressure on equities'],bullish:['CL','GC','XLE'],bearish:['ES','NQ','Airlines'],neutral:['Bonds']},
-{id:'ukraine',name:'Ukraine-Russia War Continuation',region:'Eastern Europe / Black Sea',category:['geopolitical','energy'],stage:'confirmed',information_stage:'mainstream',action_bias:'Use for strategic context, not fresh entry',narrative_saturation:.88,score:81,summary:'The conflict continues to affect defense spending, energy security, grain corridors, sanctions policy, and European fiscal priorities.',events:['Long-duration conflict persists.','Defense procurement expands.','Black Sea logistics remain sensitive.'],causes:['Territorial conflict','NATO-Russia security competition','Sanctions regime'],effects:['Defense sector demand','Energy security investment','Agricultural volatility'],bullish:['Defense stocks','Wheat','GC'],bearish:['European growth','Risk assets'],neutral:['USD']},
-{id:'ai_power',name:'AI Power Grid Demand Shock',region:'United States / Global data centers',category:['technology','energy'],stage:'accelerating',information_stage:'developing',action_bias:'Build thematic watchlist / buy pullbacks',narrative_saturation:.61,score:72,summary:'AI infrastructure growth is increasing electricity demand, grid-stability needs, power-generation investment, and strategic-metal demand.',events:['Data center capex rises.','Utilities report higher load-growth expectations.','Grid equipment becomes a bottleneck.'],causes:['AI model scaling','Cloud infrastructure expansion','Electrification'],effects:['Utility capex cycle','Copper demand','Natural gas power demand'],bullish:['Copper','Utilities','Natural gas'],bearish:['Power-constrained tech regions'],neutral:['Broad market']}
-],reports:[{title:'Global Energy Risk Brief',category:'Energy',summary:'Tracks conflict, chokepoints, sanctions, and production risks affecting oil, gas, and energy equities.'},{title:'Shipping Chokepoint Monitor',category:'Supply Chain',summary:'Tracks risk at Red Sea, Hormuz, Black Sea, Panama Canal, and South China Sea.'},{title:'Defense Spending Supercycle',category:'Defense',summary:'Tracks geopolitical drivers likely to increase defense procurement and maritime security budgets.'},{title:'AI Infrastructure Bottleneck Report',category:'Technology / Energy',summary:'Tracks how AI growth affects power demand, copper, grid equipment, gas, and data centers.'}]};
-let selected=data.hotspots[0].id;const hotspotsEl=document.getElementById('hotspots'),detailsEl=document.getElementById('details'),assetsEl=document.getElementById('assets'),reportsEl=document.getElementById('reports'),searchEl=document.getElementById('search'),categoryEl=document.getElementById('category');
-function scoreClass(s){return s>=80?'high':s>=65?'medium':'low'}function stageLabel(s){return s.replaceAll('_',' ').toUpperCase()}function decisionColor(b){return b.toLowerCase().includes('scale')||b.toLowerCase().includes('avoid')?'bearish':'bullish'}
-function filteredHotspots(){const q=searchEl.value.toLowerCase(),cat=categoryEl.value;return data.hotspots.filter(h=>cat==='all'||h.category.includes(cat)).filter(h=>[h.name,h.region,h.summary,h.information_stage,h.action_bias,...h.bullish,...h.bearish].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.score-a.score)}
-function renderHotspots(){hotspotsEl.innerHTML=filteredHotspots().map(h=>`<div class="hotspot ${h.id===selected?'active':''}" onclick="selectHotspot('${h.id}')"><div class="row"><div><div class="name">${h.name}</div><div class="meta">${h.region} · Trend: ${h.stage}</div><div class="stage-pill">Info: ${stageLabel(h.information_stage)}</div></div><div class="score ${scoreClass(h.score)}">${h.score}</div></div><div class="tags">${h.category.map(c=>`<span class="tag">${c}</span>`).join('')}</div></div>`).join('')}
-function renderDetails(){const h=data.hotspots.find(x=>x.id===selected)||filteredHotspots()[0];if(!h)return;selected=h.id;detailsEl.innerHTML=`<div class="row"><div><h2>${h.name}</h2><div class="meta">${h.region} · Trend Stage: ${h.stage}</div><div class="stage-pill">${stageLabel(h.information_stage)}</div></div><div class="score ${scoreClass(h.score)}">${h.score}</div></div><div class="section"><h3>Buy Rumor / Sell News Layer</h3><p><b>Action Bias:</b> <span class="${decisionColor(h.action_bias)}">${h.action_bias}</span></p><p><b>Narrative Saturation:</b> ${Math.round(h.narrative_saturation*100)}%</p><div class="bar"><div class="bar-fill" style="width:${Math.round(h.narrative_saturation*100)}%"></div></div><p class="meta">Low saturation = earlier rumor phase. High saturation = news is crowded and may be closer to exhaustion.</p></div><div class="section"><h3>Summary</h3><p>${h.summary}</p></div><div class="section"><h3>Event Sequence</h3><ul>${h.events.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="section"><h3>Causes</h3><ul>${h.causes.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="section"><h3>Expected Effects</h3><ul>${h.effects.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="section"><h3>Asset Impact</h3><p class="bullish"><b>Bullish:</b> ${h.bullish.join(', ')}</p><p class="bearish"><b>Bearish:</b> ${h.bearish.join(', ')}</p><p class="neutral"><b>Neutral/Mixed:</b> ${h.neutral.join(', ')}</p></div>`}
-function selectHotspot(id){selected=id;renderHotspots();renderDetails()}function renderAssets(){const assets={};data.hotspots.forEach(h=>{h.bullish.forEach(a=>assets[a]=assets[a]||{bullish:0,bearish:0,neutral:0,sat:0,n:0});h.bearish.forEach(a=>assets[a]=assets[a]||{bullish:0,bearish:0,neutral:0,sat:0,n:0});h.neutral.forEach(a=>assets[a]=assets[a]||{bullish:0,bearish:0,neutral:0,sat:0,n:0});h.bullish.forEach(a=>{assets[a].bullish+=h.score;assets[a].sat+=h.narrative_saturation;assets[a].n++});h.bearish.forEach(a=>{assets[a].bearish+=h.score;assets[a].sat+=h.narrative_saturation;assets[a].n++});h.neutral.forEach(a=>{assets[a].neutral+=h.score;assets[a].sat+=h.narrative_saturation;assets[a].n++})});assetsEl.innerHTML=Object.entries(assets).sort((a,b)=>(b[1].bullish+b[1].bearish)-(a[1].bullish+a[1].bearish)).slice(0,16).map(([asset,v])=>{const bias=v.bullish>v.bearish?'bullish':v.bearish>v.bullish?'bearish':'neutral';const sat=Math.round((v.sat/Math.max(v.n,1))*100);const action=sat>=75?'crowded / sell-news risk':sat>=50?'developing narrative':'early watch';return`<div class="box"><b>${asset}</b><br><span class="${bias}">${bias.toUpperCase()}</span><div class="meta">Narrative: ${sat}% · ${action}</div></div>`}).join('')}
-function renderReports(){reportsEl.innerHTML=data.reports.map(r=>`<div class="box"><b>${r.title}</b><div class="meta">${r.category}</div><p>${r.summary}</p></div>`).join('')}function renderAll(){renderHotspots();renderDetails();renderAssets();renderReports()}searchEl.addEventListener('input',renderAll);categoryEl.addEventListener('change',renderAll);renderAll();
+async function loadData(){
+const hotspots=await fetch('data/hotspots.json').then(r=>r.json());
+const system=await fetch('data/system.json').then(r=>r.json());
+renderHotspots(hotspots.hotspots);
+renderAssets(system.assets);
+}
+function renderHotspots(data){
+const el=document.getElementById('hotspots');
+el.innerHTML=data.map(h=>`<div class='hotspot' onclick='showDetail(${JSON.stringify(h)})'>${h.name}</div>`).join('');
+}
+function showDetail(h){
+document.getElementById('details').innerHTML=`<b>${h.name}</b><br>${h.summary}<br><br>Decision: ${h.decision?.bias||'n/a'}`;
+}
+function renderAssets(data){
+const el=document.getElementById('assets');
+el.innerHTML=data.map(a=>`<div>${a.symbol} - ${a.aggregate_bias} - ${a.decision_context.action}</div>`).join('');
+}
+loadData();
 </script>
 </body>
 </html>
